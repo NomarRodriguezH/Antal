@@ -3,11 +3,11 @@
    
    session_start();
    
-   if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: bienvenida.php");
+   if(isset($_SESSION["login"]) && $_SESSION["login"] === true){
+    header("location: panel-empleado/");
     exit;
    }
-  
+   
    $username = $password = "";
    $username_err = $password_err = "";
    
@@ -27,9 +27,9 @@
       }
       
       if(empty($username_err) && empty($password_err)){
-          $sql = "SELECT id, user, contra FROM usuarios WHERE user = ?";
+          $sql = "SELECT id, correo, pass FROM empleados WHERE correo = ?";
           
-          if($stmt = mysqli_prepare($link, $sql)){ 
+          if($stmt = mysqli_prepare($con, $sql)){ 
    
               mysqli_stmt_bind_param($stmt, "s", $param_username);
               
@@ -47,11 +47,11 @@
                               // pass correcta, so iniciar una nueva sesion.
                               session_start();
                               
-                              $_SESSION["loggedin"] = true;
+                              $_SESSION["login"] = true;
                               $_SESSION["id"] = $id;
                               $_SESSION["username"] = $username;                            
                               
-                              header("location: bienvenida.php");
+                              header("location: panel-empleado/");
                           } else{
                               $password_err = "La contraseña que has ingresado no es válida.";
                           }
@@ -69,28 +69,33 @@
    
       }
       
-      mysqli_close($link);
+      mysqli_close($con);
    }
    ?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <title>Ingreso Empleado</title>
+      <title>Ingreso</title>
       <link rel="preconnect" href="https://fonts.gstatic.com">
    </head>
    <body>
+    
       
-      <div>
-      	  <form  id="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <h3>Ingreso Para Empleados</h3>
-               <label id="label" for="username">Usuario:</label><br>
-               <input type="text" name="username" id="username" class="form-control">
+      <div class="contenedor">
+         <form  id="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <h3>Login Empleado</h3>
+           
+               <input type="text" name="username" id="username" class="form-control" value="<?php echo $username; ?>">
+              
             <br><br>
-            <label id="label" for="password">Contraseña:</label>
+           
                <input type="password" name="password" class="form-control" id="password">
+               
             <br>
-            <button type="submit">Ingresar</button>
+            <button type="submit">Ingresar</button> <br><br>
+            
          </form>
       </div>
+  
    </body>
 </html>
