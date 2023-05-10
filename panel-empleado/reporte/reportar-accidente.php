@@ -43,7 +43,7 @@
 				echo "<select name='lugar'>";
 
 				while ($fila = mysqli_fetch_assoc($resultado)) {
-				    echo "<option value='" . $fila['id'] . "'>" . $fila['nombre'] . "</option>";
+				    echo "<option value='" . $fila['id'] . "'>" . $fila['area'] . "</option>";
 				}
 				echo "</select>";
 				mysqli_close($con);

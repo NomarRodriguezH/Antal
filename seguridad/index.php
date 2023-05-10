@@ -1,140 +1,76 @@
-<?php
-  require_once "conex.php";
-  session_start();
-    if(isset($_SESSION["log"]) && $_SESSION["log"] === true){
-        header("location: controller-esp.php");
-        exit;
-    }
+<?php session_start(); 
+if (!isset($_SESSION['ESid'])) {
+	header("location: ../login.php");
+}
 
-       
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-
-    	if(empty(trim($_POST["correo"]))){
-        $correo_err = "Por favor ingrese su correo.";
-	    } else{
-	        $correo = trim($_POST["correo"]);
-	    }
-
-    
-	    if(empty(trim($_POST["password"]))){
-	        $password_err = "Por favor ingrese su contraseña.";
-	    } else{
-	        $password = trim($_POST["password"]);
-	    }
-
-
-	 if(!empty($password) && !empty($correo)){
-		$res=mysqli_query($con, "SELECT * FROM personal WHERE correo = '$correo' AND pass = '$password' ");
-		$fila=mysqli_fetch_assoc($res);
-		$id =$fila['id'];
-		$user =$fila['usuario'];
-		$status = $fila['status'];
-		$rol= $fila['id_rol']; 	
-
-		if (!empty($user) || !empty($rol)){
-					if($rol == 1 ){ //Recursos humanos
-						session_start();
-            $_SESSION["RH"] = true;
-						$_SESSION['RHid'] = $id;
-						$_SESSION['RHuser'] = $user;
-						$_SESSION['RHstatus'] = $status;
-						header ('location: recursos-humanos/');
-						exit;
-					}
-					else if($rol == 2) { // Jefe de departamento
-						session_start();
-            $_SESSION["JD"] = true;
-						$_SESSION['JPid'] = $id;
-						$_SESSION['JPuser'] = $user;
-						$_SESSION['JPstatus'] = $status;
-						header ('location: departamento/');
-						exit;
-					}
-					else if($rol == 3) { // Encargado de finanzas
-						session_start();
-             $_SESSION["EF"] = true;
-						$_SESSION['EFid'] = $id;
-						$_SESSION['EFuser'] = $user;
-						$_SESSION['EFstatus'] = $status;
-						header ('location: finanzas/');
-						exit;
-					}
-					else if($rol == 4) { // Encargado de seguridad
-						session_start();
-             $_SESSION["ES"] = true;
-						$_SESSION['ESid'] = $id;
-						$_SESSION['ESuser'] = $user;
-						$_SESSION['ESstatus'] = $status;
-						header ('location: seguridad/');
-						exit;
-					}
-					else if($rol == 5) { // CEO
-						session_start();
-             $_SESSION["CEO"] = true;
-						$_SESSION['CEOid'] = $id;
-						$_SESSION['CEOuser'] = $user;
-						$_SESSION['CEOstatus'] = $status;
-						header ('location: CEO-panel/');
-						exit;
-					}
-					else {
-						echo "MAL mama";
-					}
-					
-		}
-		else {
-			echo "No existe una cuenta registrada con estos datos.";
-		}
-	 }
- }?>
+?>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	  <script type="text/javascript" src="ja.js"></script>
+	<title>Panel De Seguridad</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<style>
+		.main {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		.box {
+			width: 500px;
+			background-color: #fff;
+			padding: 40px;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+		}
+		.box h1 {
+			margin-bottom: 40px;
+			text-align: center;
+			font-size: 2.5rem;
+			font-weight: bold;
+		}
+		.uno, .dos, .tres, .cuatro {
+			margin-bottom: 20px;
+		}
+	</style>
 </head>
 <body>
-	<div class="bg-wrapper">
-		<div class="bg-grad orange active"></div>
-		<div class="bg-grad red"></div>
-		<div class="bg-grad purple"></div>
-		<div class="bg-grad blue"></div>
-		<div class="bg-grad green"></div>
-		<div class="bg-grad yellow"></div>
-	</div>
-	<div class="login-wrapper">
-		<div class="x-wrapper">
-			<div class="y-wrapper">
-				<div class="title-wrapper">
-					<h2>Iniciar Sesión</h2>
-					<h4>Como Personal De La Empresa X.</h4>
-				</div>
-
-				<div class="input-box">
-
-						<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-							 <input id="username" autocomplete="off" placeholder="Correo" type="text" name="correo"><br><br>
-
-							 <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-					        <input type="password" autocomplete="off" id="password" name="password"  placeholder="Contraseña" class="form-control"><br>
-					      </div><br>
-
-							<input type="submit" name="" value="Ingresar">	
-						</form>
-
-
-					<span class="show-pass icon-eye" title="show characters"></span>
-				</div>
-				<div class="button-wrapper">
-					<a href="#">Olvide mi contraseña</a>
-					<a href="especialistas/solicitud-especialista"><span class="login-btn" >Registrarse</span></a>
-				</div>
-			</div>
+	<div class="main">
+		<div class="box">
+			<h1>Bienvenido jefe de departamento, <?php echo $_SESSION['ESuser'] ?></h1>
+			<div class="uno"><a href="reportes/" class="btn btn-primary btn-block">Crear Reporte</a></div>
+			<div class="dos"><a href="" class="btn btn-danger btn-block">Investigaciónes en curso</a></div>
+			<div class="tres"><a href="gestionar-reportes/" class="btn btn-warning btn-block">Gestionar Reporte</a></div>
+			
+			<center><a style="text-align: center;" href="../cerrar-sesion.php">Cerrar sesión</a>	</center>		
 		</div>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+<?php  
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="main">
+	<div class="box">
+		<h1>Panel Departamento</h1>
+		<a><div class="1">Agregar areas de trabajo</div></a>
+		<a href=""><div class="1"></div></a>
+		<a><div class="1">Status de proyectos (comunicar avances)</div></a>
+		<a href=""><div class="1"></div></a>
+	</div>
+</div>
 </body>
 </html>
