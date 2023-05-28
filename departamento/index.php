@@ -1,3 +1,4 @@
+//lael tonatiuh sa
 <?php session_start(); 
 if (!isset($_SESSION['JDid'])) {
 	header("location: ../login.php");
