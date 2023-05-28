@@ -1,3 +1,4 @@
+lael
 <?php 
 require_once '../../conex.php';
 $idP= $_POST['idP'];
